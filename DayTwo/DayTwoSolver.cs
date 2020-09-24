@@ -1,135 +1,109 @@
 ﻿using AdventOfCode2015.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace AdventOfCode2015.DayTwo
 {
     public class DayTwoSolver
     {
         private FileReader _fileReader;
-        //private string _parsedInput;
         private string[] _input;
+        private int runningRibbonTotal = 0;
+        private int runningTotalCount = 0;
 
         public DayTwoSolver(FileReader fileReader)
         {
             _fileReader = fileReader;
             _input = _fileReader.ReadLine("DayTwo/input.txt").ToArray();
-            //_parsedInput = input[0];
-        }
-
-        List<int> allMeasurements = new List<int>();
-        List<int> newRibbonValues = new List<int>();
-        public void Execute(string instruction)
-        {
-            string[] measurements;
-            measurements = instruction.Split('x');
-            //convert to int
-            int[] measurementValues = Array.ConvertAll(measurements, int.Parse);
-
-            List<int> newMeasurementValues = new List<int>();
-
-            newMeasurementValues.Add(2 * (measurementValues[0] * measurementValues[1]));
-
-            newMeasurementValues.Add(2 * (measurementValues[1] * measurementValues[2]));
-
-            newMeasurementValues.Add(2 * (measurementValues[2] * measurementValues[0]));
-
-            //Console.WriteLine($"The lwh values for Day Two are {measurementValues[0]}, {measurementValues[1]}, {measurementValues[2]}");
-
-            newMeasurementValues.Sort();
-
-            int surfaceArea = newMeasurementValues.Sum() + (newMeasurementValues[0] / 2);
-
-            allMeasurements.Add(surfaceArea);
-
-            //multiply based on instruction
-
-            //Console.WriteLine($"The solution to Day Two Part One is {surfaceArea}");
-
-            //2x3x4
-            List<int> ribbonValues = new List<int>(measurementValues);
-            //measurementValues.ToList();
-            ribbonValues.Sort();
-
-            Console.WriteLine($"Measurement Values: {ribbonValues[0]}, {ribbonValues[1]}, {ribbonValues[2]}");
-
-            //2+2+3+3
-            //ribbonValues.Add((2 * measurementValues[0]) + (2 * measurementValues[1]));
-            int ribbonWrapValue = (2 * ribbonValues[0]) + (2 * ribbonValues[1]);
-            //2x3x4
-            int ribbonBowValue = ribbonValues[0] * ribbonValues[1] * ribbonValues[2];
-
-            int ribbonNeeded = ribbonWrapValue + ribbonBowValue;
-
-            newRibbonValues.Add(ribbonNeeded);
-
-            //Console.WriteLine($"The amount of ribbon needed for Day Two Part Two is {ribbonNeeded}");
         }
 
         public void SolvePartOne()
         {
-            int finalSum = 0;
-            foreach(string instruction in _input)
+            foreach (string instruction in _input)
             {
-                Execute(instruction);
-                finalSum = allMeasurements.Sum();
+                var dimensions = ParseInstruction(instruction);
+                AddSquareFeet(dimensions[0], dimensions[1], dimensions[2]);
             }
 
-            Console.WriteLine($"The solution to Day Two Part One is {finalSum}");
+            Console.WriteLine($"The solution to Day Two Part One is {runningTotalCount}");
         }
 
         public void SolvePartTwo()
         {
-            int finalSum = 0;
             foreach (string instruction in _input)
             {
-                Execute(instruction);
-                finalSum = newRibbonValues.Sum();
+                var dimensions = ParseInstruction(instruction);
+                AddRibbon(dimensions[0], dimensions[1], dimensions[2]);
             }
 
-            Console.WriteLine($"The solution to Day Two Part Two is {finalSum}");
+            Console.WriteLine($"The solution to Day Two Part Two is {runningRibbonTotal}");
         }
 
-        //private IElevator _elevator;
+        private int[] ParseInstruction(string instruction)
+        {
+            var parsedInstruction = instruction.Split('x');
 
-        //public DayOneSolver(FileReader fileReader)
-        //{
-        //    _elevator = new Elevator();
-        //}
+            int[] instructionsAsIntegers = new int[3];
 
-        //public void SolvePartOne()
-        //{
-        //    _elevator.Reset();
+            for (int i = 0; i < parsedInstruction.Length; i++)
+            {
+                instructionsAsIntegers[i] = Int32.Parse(parsedInstruction[i]);
+            }
 
-        //    foreach (var instruction in _parsedInput)
-        //    {
-        //        Execute(instruction);
-        //    }
+            return instructionsAsIntegers;
+        }
 
-        //    Console.WriteLine($"The solution to part one is {_elevator.GetCurrentFloor()}");
-        //}
+        private int CalculateArea(int dimensionOne, int dimensionTwo)
+        {
+            return 2 * (dimensionOne * dimensionTwo);
+        }
 
-        ////hw: fix test for part one and part two of Day One Solver
-        //public void SolvePartTwo()
-        //{
-        //    var count = 0;
-        //    _elevator.Reset();
+        private int CalculatePerimeter(int dimensionOne, int dimensionTwo)
+        {
+            return (dimensionOne *2) + (dimensionTwo * 2);
+        }
 
-        //    foreach (var instruction in _parsedInput)
-        //    {
-        //        Execute(instruction);
+        private int GetMin(int sideOne, int sideTwo, int sideThree)
+        {
+            return Math.Min(Math.Min(sideOne, sideTwo), sideThree);
+        }
 
-        //        count++;
+        private void AddSquareFeet(int length, int width, int height)
+        {
+            int perimeterOfSideOne = CalculateArea(length, width);
+            int perimeterOfSideTwo = CalculateArea(width, height);
+            int perimeterOfSideThree = CalculateArea(height, length);
+            int surfaceArea = perimeterOfSideOne + perimeterOfSideTwo + perimeterOfSideThree;
 
-        //        if (_elevator.GetCurrentFloor() == -1)
-        //        {
-        //            break;
-        //        }
-        //    }
+            if (GetMin(perimeterOfSideOne, perimeterOfSideTwo, perimeterOfSideThree) == perimeterOfSideOne)
+            {
+                //p1 is smallest
+                runningTotalCount += surfaceArea + perimeterOfSideOne / 2;
 
-        //    Console.WriteLine($"The solution to part two is {count}");
-        //}
+            }
+            else if (GetMin(perimeterOfSideOne, perimeterOfSideTwo, perimeterOfSideThree) == perimeterOfSideTwo)
+            {
+                //p2 is smallest
+                runningTotalCount += surfaceArea + perimeterOfSideTwo / 2;
+            }
+            else
+            {
+                //p3 is smallest
+                runningTotalCount += surfaceArea + perimeterOfSideThree / 2;
+            }
+        }
+
+        private void AddRibbon(int length, int width, int height)
+        {
+            int perimeterOfSideOne = CalculatePerimeter(length, width);
+            int perimeterOfSideTwo = CalculatePerimeter(width, height);
+            int perimeterOfSideThree = CalculatePerimeter(height, length);
+
+            int smallestPerimeter = GetMin(perimeterOfSideOne, perimeterOfSideTwo, perimeterOfSideThree);
+
+            int ribbonBowValue = length * width * height;
+
+            runningRibbonTotal += smallestPerimeter + ribbonBowValue;
+        }
     }
 }

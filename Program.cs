@@ -19,7 +19,7 @@ namespace AdventOfCode2015
 
             var solverTwo = new DayTwoSolver(new FileReader());
 
-            //solverTwo.SolvePartOne();
+            solverTwo.SolvePartOne();
 
             solverTwo.SolvePartTwo();
 
