@@ -1,4 +1,5 @@
 ﻿using AdventOfCode2015.Day1;
+using AdventOfCode2015.DayThree;
 using AdventOfCode2015.DayTwo;
 using AdventOfCode2015.Utilities;
 using System;
@@ -10,7 +11,7 @@ namespace AdventOfCode2015
     {
         static void Main(string[] args)
         {
-            
+
             var solver = new DayOneSolver(new FileReader());
 
             solver.SolvePartOne();
@@ -19,9 +20,13 @@ namespace AdventOfCode2015
 
             var solverTwo = new DayTwoSolver(new FileReader());
 
-            //solverTwo.SolvePartOne();
+            solverTwo.SolvePartOne();
 
             solverTwo.SolvePartTwo();
+
+            var solverThree = new DayThreeSolver(new FileReader());
+
+            solverThree.SolvePartOne();
 
         }
     }
