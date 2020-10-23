@@ -11,8 +11,11 @@ namespace AdventOfCode2015.DayThree
         private FileReader _fileReader;
         private string[] _input;
         private HashSet<Coordinate> coordinateSet = new HashSet<Coordinate>();
-        private int currentX = 0;
-        private int currentY = 0;
+        private int santaX = 0;
+        private int santaY = 0;
+        private int roboSantaX = 0;
+        private int roboSantaY = 0;
+        private bool santasTurn = true;
 
         public DayThreeSolver(FileReader fileReader)
         {
@@ -23,12 +26,12 @@ namespace AdventOfCode2015.DayThree
         public void SolvePartOne()
         {
             //starting point
-            coordinateSet.Add(new Coordinate(currentX, currentY));
+            coordinateSet.Add(new Coordinate(santaX, santaY));
             //for loop here
             foreach (var direction in _input[0])
             {
                 Execute(direction);
-                var currentCoordinate = new Coordinate(currentX, currentY); //this is new coordinate
+                var currentCoordinate = new Coordinate(santaX, santaY); //this is new coordinate
                                                                             //check if coordinate exists in set
                 if (!coordinateSet.Contains(currentCoordinate))
                 {
@@ -38,41 +41,129 @@ namespace AdventOfCode2015.DayThree
 
             //end loop and check count
 
-            Console.WriteLine($"The solution to Part One is {coordinateSet.Count()}");
+            Console.WriteLine($"The solution to Day Three Part One is {coordinateSet.Count()}");
         }
-
+        
         public void SolvePartTwo()
         {
-            //track Santa moves
+            santaX = 0;
+            santaY = 0;
 
-            //track Robo-Santa moves
+            coordinateSet = new HashSet<Coordinate>();
+
+            //starting point
+            coordinateSet.Add(new Coordinate(santaX, santaY));
+
+            //for loop here
+            foreach (var direction in _input[0])
+            {
+                ExecutePartTwo(direction);
+                Coordinate currentCoordinate;
+                   
+                if (santasTurn)
+                {
+                    currentCoordinate = new Coordinate(santaX, santaY); //this is new coordinate
+                }
+                else
+                {
+                    currentCoordinate = new Coordinate(roboSantaX, roboSantaY); //this is new coordinate
+
+                }
+                //check if coordinate exists in set
+                if (!coordinateSet.Contains(currentCoordinate))
+                {
+                    coordinateSet.Add(currentCoordinate);
+                }
+
+                //toggles boolean value
+                santasTurn = !santasTurn;
+            }
+
+            //end loop and check count
+
+            Console.WriteLine($"The solution to Day Three Part Two is {coordinateSet.Count()}");
 
 
         }
-
+        
         public void Execute(char direction)
         {
             switch (direction)
             {
                 case '^':
                     //move up
-                    currentY++;
+                    santaY++;
                     break;
                 case '<':
                     //Move left;
-                    currentX--;
+                    santaX--;
                     break;
                 case '>':
                     //Move right;
-                    currentX++;
+                    santaX++;
                     break;
                 case 'v':
                     //Move down;
-                    currentY--;
+                    santaY--;
+                    break;
+            }
+        }
+
+        public void ExecutePartTwo(char direction)
+        {
+            switch (direction)
+            {
+                case '^':
+                    if (santasTurn)
+                    {
+                        //move up
+                        santaY++;
+                    }
+                    else
+                    {
+                        roboSantaY++;
+                    }
+                    
+                    break;
+                case '<':
+                    if (santasTurn)
+                    {
+                        //move left
+                        santaX--;
+                    }
+                    else
+                    {
+                        roboSantaX--;
+                    }
+                    break;
+                case '>':
+                    if (santasTurn)
+                    {
+                        //move right
+                        santaX++;
+                    }
+                    else
+                    {
+                        roboSantaX++;
+                    }
+                    break;
+                case 'v':
+                    //Move down;
+                    if (santasTurn)
+                    {
+                        //move left
+                        santaY--;
+                    }
+                    else
+                    {
+                        roboSantaY--;
+                    }
                     break;
             }
         }
     }
+
+
 
     struct Coordinate
     {

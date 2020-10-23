@@ -27,6 +27,7 @@ namespace AdventOfCode2015
             var solverThree = new DayThreeSolver(new FileReader());
 
             solverThree.SolvePartOne();
+            solverThree.SolvePartTwo();
 
         }
     }
