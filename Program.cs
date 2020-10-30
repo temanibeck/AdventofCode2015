@@ -1,4 +1,5 @@
 ﻿using AdventOfCode2015.Day1;
+using AdventOfCode2015.DayFour;
 using AdventOfCode2015.DayThree;
 using AdventOfCode2015.DayTwo;
 using AdventOfCode2015.Utilities;
@@ -28,6 +29,11 @@ namespace AdventOfCode2015
 
             solverThree.SolvePartOne();
             solverThree.SolvePartTwo();
+
+            var solverFour = new DayFourSolver();
+            solverFour.SolvePartOne();
+            solverFour.SolvePartTwo();
+
 
         }
     }
